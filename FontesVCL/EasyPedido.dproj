@@ -107,11 +107,21 @@
         <DCCReference Include="main.pas">
             <Form>frmPrincipal</Form>
         </DCCReference>
-        <DCCReference Include="utils\untLoad.pas">
-            <Form>LoadingForm</Form>
+        <DCCReference Include="utils\VCL.Session.pas"/>
+        <DCCReference Include="utils\VclNavigation.pas"/>
+        <DCCReference Include="utils\untLoad.pas"/>
+        <DCCReference Include="UnitPedido.pas">
+            <Form>frmPedido</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="utils\VCL.Session.pas"/>
+        <DCCReference Include="UnitCliente.pas">
+            <Form>FrmCliente</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="UnitclienteCad.pas">
+            <Form>FrmClienteCad</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

@@ -28,27 +28,25 @@ begin
   {Deixar o fundo opaco e tirar o tela branco do panel}
 
   // Criando o formulário de fundo
- { Fundo := TForm.Create(nil);
+  Fundo := TForm.Create(nil);
   Fundo.BorderStyle := bsNone;
   Fundo.FormStyle := fsStayOnTop;
   Fundo.Color := clred;
   Fundo.AlphaBlend := True;
   Fundo.AlphaBlendValue := 128; // Semitransparente
   Fundo.WindowState := wsMaximized;
-  Fundo.Position := poScreenCenter; }
+  Fundo.Position := poScreenCenter;
 
   // Criando o formulário de loading com fundo cinza semi-transparente
   Loading := TForm.Create(nil);
   Loading.BorderStyle := bsNone;
   //Loading.FormStyle := fsStayOnTop;
-  Loading.Width := 200;
-  Loading.Height := 200;
+  Loading.Width := 1096;
+  Loading.Height := 807;
   Loading.Position := poScreenCenter;
   Loading.Color := clGray; // Definindo a cor de fundo como cinza
   Loading.AlphaBlend := True; // Habilitar AlphaBlend para transparência
   Loading.AlphaBlendValue := 150; // Ajuste para semi-transparente (0 a 255)
-
-
 
   // Criando o TActivityIndicator
   Indicator := TActivityIndicator.Create(Loading);

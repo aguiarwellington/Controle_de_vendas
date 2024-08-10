@@ -63,9 +63,8 @@ begin
       end;
 
     TSession.ID_USUARIO := 1;
-    TSession.EMAIL := 'Wellington@gmail.com';
-    TSession.NOME := 'wellington';
-
+    TSession.EMAIL := 'Wellingtoncarvalho@gmail.com';
+    TSession.NOME := 'Wellington Carvalho';
 
     //Tloading.HideLoading;
     if not assigned(frmPrincipal) then

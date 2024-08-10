@@ -4,8 +4,12 @@ uses
   Vcl.Forms,
   mainLogin in 'mainLogin.pas' {FrmLogin},
   main in 'main.pas' {frmPrincipal},
-  untLoad in 'utils\untLoad.pas' {LoadingForm},
-  VCL.Session in 'utils\VCL.Session.pas';
+  VCL.Session in 'utils\VCL.Session.pas',
+  VclNavigation in 'utils\VclNavigation.pas',
+  untLoad in 'utils\untLoad.pas',
+  UnitPedido in 'UnitPedido.pas' {frmPedido},
+  UnitCliente in 'UnitCliente.pas' {FrmCliente},
+  UnitclienteCad in 'UnitclienteCad.pas' {FrmClienteCad};
 
 {$R *.res}
 
