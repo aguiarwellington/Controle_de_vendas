@@ -13,6 +13,7 @@ object FrmCliente: TFrmCliente
   Font.Style = []
   WindowState = wsMaximized
   OnClose = FormClose
+  OnShow = FormShow
   TextHeight = 15
   object pHeader: TPanel
     AlignWithMargins = True
@@ -29,7 +30,6 @@ object FrmCliente: TFrmCliente
     Color = 16051947
     ParentBackground = False
     TabOrder = 0
-    ExplicitWidth = 0
     object Label1: TLabel
       AlignWithMargins = True
       Left = 3
@@ -65,7 +65,6 @@ object FrmCliente: TFrmCliente
       Color = 16475988
       ParentBackground = False
       TabOrder = 0
-      ExplicitLeft = -306
       object btnNovo: TSpeedButton
         Left = 0
         Top = 0
@@ -100,7 +99,6 @@ object FrmCliente: TFrmCliente
       Color = 6906591
       ParentBackground = False
       TabOrder = 1
-      ExplicitLeft = -153
       object SBExcluir: TSpeedButton
         Left = 0
         Top = 0
@@ -138,7 +136,6 @@ object FrmCliente: TFrmCliente
       Color = 16475988
       ParentBackground = False
       TabOrder = 2
-      ExplicitLeft = -459
       object sbEditar: TSpeedButton
         Left = 0
         Top = 0
@@ -176,7 +173,6 @@ object FrmCliente: TFrmCliente
       Color = 16051947
       ParentBackground = False
       TabOrder = 3
-      ExplicitWidth = 363
       object pnlButtonBuscar: TPanel
         AlignWithMargins = True
         Left = 179
@@ -192,7 +188,6 @@ object FrmCliente: TFrmCliente
         Color = 16475988
         ParentBackground = False
         TabOrder = 0
-        ExplicitLeft = 210
         object sbBuscar: TSpeedButton
           Left = 0
           Top = 0
@@ -231,7 +226,6 @@ object FrmCliente: TFrmCliente
         Font.Style = []
         ParentFont = False
         TabOrder = 1
-        ExplicitWidth = 210
         ExplicitHeight = 33
       end
     end
@@ -249,7 +243,7 @@ object FrmCliente: TFrmCliente
     Align = alClient
     BorderStyle = bsNone
     Color = clWhite
-    DataSource = DataSource1
+    DataSource = dsCliente
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -15
@@ -265,7 +259,7 @@ object FrmCliente: TFrmCliente
     Columns = <
       item
         Expanded = False
-        FieldName = 'Id.Cliente'
+        FieldName = 'Id_Cliente'
         Font.Charset = ANSI_CHARSET
         Font.Color = clWindowText
         Font.Height = -16
@@ -336,13 +330,23 @@ object FrmCliente: TFrmCliente
         Title.Font.Name = 'Segoe UI Semibold'
         Title.Font.Style = [fsBold]
         Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'Cidade'
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'UF'
+        Visible = True
       end>
   end
-  object DataSource1: TDataSource
-    Left = 576
-    Top = 152
+  object dsCliente: TDataSource
+    Left = 800
+    Top = 200
   end
-  object FDMemTable1: TFDMemTable
+  object tabCliente: TFDMemTable
     FetchOptions.AssignedValues = [evMode]
     FetchOptions.Mode = fmAll
     ResourceOptions.AssignedValues = [rvSilentMode]
@@ -350,7 +354,7 @@ object FrmCliente: TFrmCliente
     UpdateOptions.AssignedValues = [uvCheckRequired, uvAutoCommitUpdates]
     UpdateOptions.CheckRequired = False
     UpdateOptions.AutoCommitUpdates = True
-    Left = 560
-    Top = 264
+    Left = 800
+    Top = 112
   end
 end

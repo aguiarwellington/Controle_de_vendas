@@ -9,13 +9,16 @@ uses
   untLoad in 'utils\untLoad.pas',
   UnitPedido in 'UnitPedido.pas' {frmPedido},
   UnitCliente in 'UnitCliente.pas' {FrmCliente},
-  UnitclienteCad in 'UnitclienteCad.pas' {FrmClienteCad};
+  UnitclienteCad in 'UnitclienteCad.pas' {FrmClienteCad},
+  DataModules.Cliente in 'DataModules\DataModules.Cliente.pas' {DMCliente: TDataModule};
 
 {$R *.res}
 
 begin
+  reportMemoryLeaksOnShutdown := true;
   Application.Initialize;
   Application.MainFormOnTaskbar := True;
   Application.CreateForm(TFrmLogin, FrmLogin);
+  Application.CreateForm(TDMCliente, DMCliente);
   Application.Run;
 end.
