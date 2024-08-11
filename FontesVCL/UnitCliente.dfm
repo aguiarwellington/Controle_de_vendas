@@ -205,7 +205,7 @@ object FrmCliente: TFrmCliente
           Font.Name = 'Segoe UI Black'
           Font.Style = [fsBold]
           ParentFont = False
-          ExplicitLeft = 6
+          ExplicitLeft = 3
         end
       end
       object edtPesquisar: TEdit
@@ -230,7 +230,7 @@ object FrmCliente: TFrmCliente
       end
     end
   end
-  object DBGrid1: TDBGrid
+  object DBCliente: TDBGrid
     AlignWithMargins = True
     Left = 0
     Top = 80
@@ -242,7 +242,7 @@ object FrmCliente: TFrmCliente
     Margins.Bottom = 0
     Align = alClient
     BorderStyle = bsNone
-    Color = clWhite
+    Color = clBtnText
     DataSource = dsCliente
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -270,12 +270,12 @@ object FrmCliente: TFrmCliente
         Title.Font.Height = -15
         Title.Font.Name = 'Segoe UI Semibold'
         Title.Font.Style = [fsBold]
-        Width = 150
+        Width = 86
         Visible = True
       end
       item
         Expanded = False
-        FieldName = 'Nome'
+        FieldName = 'nome'
         Font.Charset = ANSI_CHARSET
         Font.Color = clWindowText
         Font.Height = -16
@@ -286,12 +286,12 @@ object FrmCliente: TFrmCliente
         Title.Font.Height = -15
         Title.Font.Name = 'Segoe UI Semibold'
         Title.Font.Style = [fsBold]
-        Width = 150
+        Width = 99
         Visible = True
       end
       item
         Expanded = False
-        FieldName = 'Endereco'
+        FieldName = 'endereco'
         Font.Charset = ANSI_CHARSET
         Font.Color = clWindowText
         Font.Height = -16
@@ -302,12 +302,12 @@ object FrmCliente: TFrmCliente
         Title.Font.Height = -15
         Title.Font.Name = 'Segoe UI Semibold'
         Title.Font.Style = [fsBold]
-        Width = 155
+        Width = 122
         Visible = True
       end
       item
         Expanded = False
-        FieldName = 'Complemento'
+        FieldName = 'complemento'
         Font.Charset = ANSI_CHARSET
         Font.Color = clWindowText
         Font.Height = -16
@@ -318,12 +318,12 @@ object FrmCliente: TFrmCliente
         Title.Font.Height = -15
         Title.Font.Name = 'Segoe UI Semibold'
         Title.Font.Style = [fsBold]
-        Width = 150
+        Width = 115
         Visible = True
       end
       item
         Expanded = False
-        FieldName = 'Bairro'
+        FieldName = 'bairro'
         Title.Font.Charset = ANSI_CHARSET
         Title.Font.Color = clWindowText
         Title.Font.Height = -15
@@ -333,16 +333,18 @@ object FrmCliente: TFrmCliente
       end
       item
         Expanded = False
-        FieldName = 'Cidade'
+        FieldName = 'cidade'
+        Width = 62
         Visible = True
       end
       item
         Expanded = False
-        FieldName = 'UF'
+        FieldName = 'uf'
         Visible = True
       end>
   end
   object dsCliente: TDataSource
+    DataSet = tabCliente
     Left = 800
     Top = 200
   end
@@ -354,7 +356,7 @@ object FrmCliente: TFrmCliente
     UpdateOptions.AssignedValues = [uvCheckRequired, uvAutoCommitUpdates]
     UpdateOptions.CheckRequired = False
     UpdateOptions.AutoCommitUpdates = True
-    Left = 800
-    Top = 112
+    Left = 712
+    Top = 200
   end
 end

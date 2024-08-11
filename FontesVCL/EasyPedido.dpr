@@ -10,7 +10,8 @@ uses
   UnitPedido in 'UnitPedido.pas' {frmPedido},
   UnitCliente in 'UnitCliente.pas' {FrmCliente},
   UnitclienteCad in 'UnitclienteCad.pas' {FrmClienteCad},
-  DataModules.Cliente in 'DataModules\DataModules.Cliente.pas' {DMCliente: TDataModule};
+  DataModules.Cliente in 'DataModules\DataModules.Cliente.pas' {DMCliente: TDataModule},
+  Vcl.Loading in 'utils\Vcl.Loading.pas';
 
 {$R *.res}
 

@@ -249,8 +249,6 @@ object frmPrincipal: TfrmPrincipal
     Color = 16051947
     ParentBackground = False
     TabOrder = 2
-    ExplicitLeft = 203
-    ExplicitTop = -5
     object pnlNavBar: TPanel
       AlignWithMargins = True
       Left = 0
@@ -412,7 +410,6 @@ object frmPrincipal: TfrmPrincipal
       Color = 16051947
       ParentBackground = False
       TabOrder = 1
-      ExplicitLeft = 29
     end
   end
   object imglist: TImageList

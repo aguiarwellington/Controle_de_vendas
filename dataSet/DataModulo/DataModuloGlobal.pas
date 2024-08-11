@@ -103,7 +103,7 @@ begin
 
     if filtro <> '' then
     begin
-      qry.SQL.add('where nome like: filtro');
+      qry.SQL.add('where nome like :filtro');
       qry.ParamByName('filtro').Value := '%' + filtro + '%';
     end;
 

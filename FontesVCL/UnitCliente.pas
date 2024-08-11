@@ -29,9 +29,8 @@ uses
   UnitclienteCad,
   Vcl.ExtCtrls,
   VclNavigation,
-
-  RESTRequest4D,
-  DataSet.Serialize.adapter.RESTRequest4D;
+  DataModules.Cliente,
+  Vcl.Loading;
 
 type
   TFrmCliente = class(TForm)
@@ -43,7 +42,7 @@ type
     SBExcluir: TSpeedButton;
     Panel2: TPanel;
     sbEditar: TSpeedButton;
-    DBGrid1: TDBGrid;
+    DBCliente: TDBGrid;
     dsCliente: TDataSource;
     tabCliente: TFDMemTable;
     pnlBuscar: TPanel;
@@ -55,7 +54,8 @@ type
     procedure FormShow(Sender: TObject);
   private
     procedure OpenCadCliente(Id_cliente: integer);
-    procedure ListarCliente(memtable: TFDMemTable; filtro:string);
+    procedure RefreshClientes;
+    procedure TerminateBusca(Sender: TObject);
     { Private declarations }
 
   public
@@ -74,6 +74,7 @@ begin
   Tnavigation.openModal(TFrmClienteCad, FrmClienteCad);
 end;
 
+
 procedure TFrmCliente.btnNovoClick(Sender: TObject);
 begin
   OpenCadCliente(0);
@@ -85,28 +86,49 @@ begin
   Frmcliente := nil;
 end;
 
-
-
 procedure TFrmCliente.FormShow(Sender: TObject);
 begin
-  ListarCliente(Tabcliente, edtPesquisar.text);
+  RefreshClientes;
 end;
 
-procedure TFrmCliente.ListarCliente(memtable: TFDMemTable;
-                                    filtro:string);
-var
-  resp: IResponse;
+procedure TFrmCliente.TerminateBusca(Sender: TObject);
 begin
-   resp:= TRequest.new.baseURL('http://localhost:3000')
-                      .Resource('/clientes')
-                      .AddParam('filtro', filtro)
-                      .accept('application/json')
-                      .Adapters(TdatasetSerializeadapter.New(memtable))
-                      .Get;
+   Tloading.Hide;
+    DBCliente.DataSource:= dscliente;
 
-   if resp.StatusCode <> 200 then
-    raise exception.Create(resp.Content);
+   if sender is TThread then
+    if assigned(TThread(sender).FatalException) then
+    begin
+      showmessage(exception(TThread(sender).FatalException).Message);
+      exit;
+    end;
+end;
+
+
+procedure TFrmCliente.RefreshClientes;
+begin
+
+  Tloading.show(self);
+
+  Tloading.ExecuteThread(procedure
+  begin
+    sleep(1000);
+
+    //acessando o servidor
+    DBCliente.DataSource:= nil;
+    DMCliente.ListarCliente(Tabcliente, edtPesquisar.text);
+
+    //atualizar o dbgrid
+    {Precisa do synchronize, nao pode mexer visualmente na grid de dentro da tthread }
+    {TThread.Synchronize(TThread.CurrentThread,procedure
+    begin
+       DBCliente.DataSource:= dscliente;
+    end)  }
+
+  end, TerminateBusca);
 
 end;
+
+
 
 end.
