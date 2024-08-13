@@ -1,7 +1,7 @@
 object Dm: TDm
   OnCreate = DataModuleCreate
-  Height = 473
-  Width = 686
+  Height = 516
+  Width = 598
   object Conn: TFDConnection
     Params.Strings = (
       

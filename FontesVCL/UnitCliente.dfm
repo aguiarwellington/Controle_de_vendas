@@ -153,9 +153,8 @@ object FrmCliente: TFrmCliente
         Font.Name = 'Segoe UI Black'
         Font.Style = [fsBold]
         ParentFont = False
-        ExplicitTop = -30
-        ExplicitWidth = 194
-        ExplicitHeight = 50
+        OnClick = sbEditarClick
+        ExplicitLeft = 3
       end
     end
     object pnlBuscar: TPanel
@@ -286,7 +285,7 @@ object FrmCliente: TFrmCliente
         Title.Font.Height = -15
         Title.Font.Name = 'Segoe UI Semibold'
         Title.Font.Style = [fsBold]
-        Width = 99
+        Width = 86
         Visible = True
       end
       item
@@ -302,7 +301,7 @@ object FrmCliente: TFrmCliente
         Title.Font.Height = -15
         Title.Font.Name = 'Segoe UI Semibold'
         Title.Font.Style = [fsBold]
-        Width = 122
+        Width = 86
         Visible = True
       end
       item
@@ -318,7 +317,7 @@ object FrmCliente: TFrmCliente
         Title.Font.Height = -15
         Title.Font.Name = 'Segoe UI Semibold'
         Title.Font.Style = [fsBold]
-        Width = 115
+        Width = 86
         Visible = True
       end
       item
@@ -329,17 +328,19 @@ object FrmCliente: TFrmCliente
         Title.Font.Height = -15
         Title.Font.Name = 'Segoe UI Semibold'
         Title.Font.Style = [fsBold]
+        Width = 86
         Visible = True
       end
       item
         Expanded = False
         FieldName = 'cidade'
-        Width = 62
+        Width = 86
         Visible = True
       end
       item
         Expanded = False
         FieldName = 'uf'
+        Width = 86
         Visible = True
       end>
   end

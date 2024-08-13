@@ -5,125 +5,136 @@ interface
 uses
   System.SysUtils,
   System.UITypes,
-  vcl.Forms,
+  Vcl.Forms,
   Vcl.Graphics,
-  Vcl.Controls,
-  Vcl.ExtCtrls,
-  Vcl.StdCtrls,
   Vcl.WinXCtrls,
-  system.Generics.Collections,
-  system.Classes;
+  Vcl.StdCtrls,
+  Vcl.ExtCtrls,
+  System.Generics.Collections,
+  System.Classes;
 
 type
   TNavigation = class
     private
-      class var frmopen: tform;
-      class var frmModalOpen: tform;
-      class var frmModalFundo: tform;
+        class var FrmOpen: TForm;
+        class var FrmModalOpen: TForm;
+        class var FrmModalFundo: TForm;
     public
-      class var paramInt: integer;
-      class var executeonclose: procedure of object;
+        class var ParamInt: integer;
+        class var ParamStr: string;
+        class var ExecuteOnClose: procedure of Object;
 
-      class procedure open(frmclass: tformclass;
-                           frm: TForm;
-                           parent: tpanel = nil);
+        class procedure Open(FrmClass: TFormClass;
+                             Frm: TForm;
+                             Parent: TPanel = nil);
+        class procedure OpenModal(FrmClass: TFormClass;
+                                  Frm: TForm;
+                                  Parent: TForm = nil);
+        class procedure Close(Frm: TForm);
+        class procedure CloseAndCancel(Frm: TForm);
+    end;
 
-      class procedure openModal(frmclass: tformclass;
-                                frm: Tform; parent: tform = nil);
-
-      class procedure close(frm: tform);
-  end;
 
 implementation
 
-{ TNavigation }
-
-class procedure TNavigation.close(frm: tform);
+class procedure TNavigation.Open(FrmClass: TFormClass;
+              Frm: TForm;
+              Parent: TPanel);
 begin
-//Verifica se esta fechando ummodal
-
-  if frm.Name = frmModalOpen.name then
-  begin
-    FrmModalFundo.Free;
-    FrmModalFundo := nil;
-  end;
-
-  if assigned(executeonclose) then
-  begin
-    executeonclose();
-    executeonclose:= nil;
-  end;
-
-  frm.Close;
-end;
-
-class procedure TNavigation.open(frmclass: tformclass; frm: TForm;
-  parent: tpanel);
-begin
-  // close the form if have any open
-
-  if assigned(frmOpen) then
-  begin
-    frmOpen.Free;
-    frmOpen:= nil;
-  end;
-
-  if (frmclass = nil) then
-    exit;
-
-  if not assigned(frm) then
-    application.CreateForm(frmclass,frm);
-
-  if parent <> nil then
-  begin
-    if parent.ClassType = TPanel then
+    // Fecha o form caso tenha algo algum aberto...
+    if Assigned(FrmOpen) then
     begin
-      frm.Parent := Tpanel(parent);
-      tpanel(Parent).Margins.Bottom := 1;
-      tpanel(Parent).Margins.Bottom := 0;
+        FrmOpen.Free;
+        FrmOpen := nil
     end;
-  end;
 
-  frmOpen := frm; // salva qual é o form aberto
-  frm.Show;
+    if (FrmClass = nil) then
+        exit;
+
+    if NOT Assigned(Frm) then
+        Application.CreateForm(FrmClass, Frm);
+
+    if Parent <> nil then
+    begin
+        if Parent.ClassType = TPanel then
+        begin
+            Frm.Parent := TPanel(Parent);
+            TPanel(Parent).Margins.Bottom := 1;
+            TPanel(Parent).Margins.Bottom := 0;
+        end
+        else if Parent.ClassType = TForm then
+            Frm.Parent := TForm(Parent);
+    end;
+
+    FrmOpen := Frm; // Salva qual é o form aberto
+    Frm.Show;
 end;
 
-class procedure TNavigation.openModal(frmclass: tformclass;
-                                      frm: Tform;
-                                      parent: tform = nil);
+class procedure TNavigation.OpenModal(FrmClass: TFormClass;
+                                      Frm: TForm;
+                                      Parent: TForm = nil);
 begin
-   //  abrir um pedaco da tela e todo o pedaco em volta fica opaco
+    // Fundo opaco...
+    if NOT Assigned(FrmModalFundo) then
+        FrmModalFundo := TForm.Create(Frm);
 
-   if not assigned(frmModalFundo)then
-    frmModalFundo := TForm.Create(Frm);
+    FrmModalFundo.AlphaBlend := true;
+    FrmModalFundo.AlphaBlendValue := 160;
+    FrmModalFundo.Color := clBlack;
 
-   FrmModalFundo.AlphaBlend := true;
-   FrmModalFundo.AlphaBlendValue := 160;
-   FrmModalFundo.Color := clblack;
+    if Parent = nil then
+        FrmModalFundo.WindowState := wsMaximized
+    else
+    begin
+        FrmModalFundo.WindowState := wsNormal;
+        FrmModalFundo.Position := poDesigned;
+        FrmModalFundo.Width := Parent.Width;
+        FrmModalFundo.Height := Parent.Height;
+        FrmModalFundo.Left := Parent.Left;
+        FrmModalFundo.Top := Parent.Top;
+    end;
 
-   if parent = nil then
-    frmModalFundo.WindowState := wsmaximized
-   else
-   begin
-    FrmModalFundo.WindowState := wsNormal;
-    FrmModalFundo.Position := podesigned;
-    FrmModalFundo.Width := parent.Width;
-    FrmModalFundo.Height := parent.Height;
-    FrmModalFundo.Left := parent.Left;
-    FrmModalFundo.Top := parent.Top;
-   end;
+    FrmModalFundo.BorderStyle := bsNone;
 
-  FrmModalFundo.BorderStyle := bsNone;
+    if NOT Assigned(Frm) then
+        Frm := FrmClass.Create(Frm);
 
-  if not assigned(frm) then
-    Frm := FrmClass.Create(Frm);
+    FrmModalFundo.Show;
 
-  FrmModalFundo.Show;
-
-  FrmModalOpen:= Frm; // salva qual e o form modal aberto
-
-  Frm.ShowModal;
-
+    FrmModalOpen := Frm; // Salva qual é o form modal aberto...
+    Frm.ShowModal;
 end;
+
+class procedure TNavigation.Close(Frm: TForm);
+begin
+    // Verifica se está fechando um modal...
+    if Frm.Name = FrmModalOpen.Name then
+    begin
+        FrmModalFundo.Free;
+        FrmModalFundo := nil;
+    end;
+
+    if Assigned(ExecuteOnClose) then
+    begin
+        ExecuteOnClose();
+        ExecuteOnClose := nil;
+    end;
+
+    Frm.Close;
+end;
+
+class procedure TNavigation.CloseAndCancel(Frm: TForm);
+begin
+    // Verifica se está fechando um modal...
+    if Frm.Name = FrmModalOpen.Name then
+    begin
+        FrmModalFundo.Free;
+        FrmModalFundo := nil;
+    end;
+
+    Frm.Close;
+end;
+
+
 
 end.

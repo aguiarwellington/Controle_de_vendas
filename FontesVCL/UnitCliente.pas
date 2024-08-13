@@ -52,10 +52,12 @@ type
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure btnNovoClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure sbEditarClick(Sender: TObject);
   private
     procedure OpenCadCliente(Id_cliente: integer);
     procedure RefreshClientes;
     procedure TerminateBusca(Sender: TObject);
+    procedure editar;
     { Private declarations }
 
   public
@@ -71,6 +73,7 @@ implementation
 
 procedure TFrmCliente.OpenCadCliente(Id_cliente: integer);
 begin
+  Tnavigation.ParamInt:= Id_cliente;
   Tnavigation.openModal(TFrmClienteCad, FrmClienteCad);
 end;
 
@@ -78,6 +81,15 @@ end;
 procedure TFrmCliente.btnNovoClick(Sender: TObject);
 begin
   OpenCadCliente(0);
+end;
+
+procedure TFrmCliente.editar;
+begin
+  if tabCliente.RecordCount = 0 then
+    exit;
+
+  OpenCadCliente(TabCliente.FieldByName('id_cliente').AsInteger);
+
 end;
 
 procedure TFrmCliente.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -94,7 +106,8 @@ end;
 procedure TFrmCliente.TerminateBusca(Sender: TObject);
 begin
    Tloading.Hide;
-    DBCliente.DataSource:= dscliente;
+
+   DBCliente.DataSource:= dscliente;
 
    if sender is TThread then
     if assigned(TThread(sender).FatalException) then
@@ -108,7 +121,7 @@ end;
 procedure TFrmCliente.RefreshClientes;
 begin
 
-  Tloading.show(self);
+  Tloading.show;
 
   Tloading.ExecuteThread(procedure
   begin
@@ -118,17 +131,15 @@ begin
     DBCliente.DataSource:= nil;
     DMCliente.ListarCliente(Tabcliente, edtPesquisar.text);
 
-    //atualizar o dbgrid
-    {Precisa do synchronize, nao pode mexer visualmente na grid de dentro da tthread }
-    {TThread.Synchronize(TThread.CurrentThread,procedure
-    begin
-       DBCliente.DataSource:= dscliente;
-    end)  }
-
   end, TerminateBusca);
 
 end;
 
 
+
+procedure TFrmCliente.sbEditarClick(Sender: TObject);
+begin
+  editar;
+end;
 
 end.
