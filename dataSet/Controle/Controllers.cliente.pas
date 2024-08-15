@@ -23,8 +23,8 @@ begin
     Thorse.Get('/clientes',Listar);
     Thorse.Get('/clientes/:id_cliente',ListarId);
     Thorse.Post('/clientes',Inserir);
-    Thorse.Put('/clientes',Editar);
-    Thorse.Delete('/clientes',Excluir);
+    Thorse.Put('/clientes/:id_cliente',Editar);
+    Thorse.Delete('/clientes/:id_cliente',Excluir);
 end;
 
 procedure Listar(Req: THorseRequest; Res: THorseResponse;

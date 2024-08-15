@@ -81,6 +81,7 @@ end;
 procedure TFrmCliente.btnNovoClick(Sender: TObject);
 begin
   OpenCadCliente(0);
+  RefreshClientes;
 end;
 
 procedure TFrmCliente.editar;
@@ -140,6 +141,7 @@ end;
 procedure TFrmCliente.sbEditarClick(Sender: TObject);
 begin
   editar;
+  RefreshClientes;
 end;
 
 end.

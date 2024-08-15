@@ -122,35 +122,35 @@ begin
 end;
 
 function TDm.ClienteEditar(id_cliente: integer;
-                            nome, endereco, complemento, bairro,cidade,
+                            nome, endereco, complemento, bairro, cidade,
                             uf: string): TJsonObject;
 var
   qry: TFDQuery;
 begin
   try
     qry := TFDQuery.Create(nil);
-    qry.Connection:= Conn;
+    qry.Connection := Conn;
 
-    qry.SQL.Add('update clientes set nome=:nome, endereco=:endereco ,complemento=:complemento, bairro=:bairro,cidade=:cidade,uf=:uf');
-    qry.SQL.Add('values(:nome, :endereco, :complemento, :bairro, :cidade, :uf);');
-    qry.SQL.Add('select last_insert_rowid() as id_cliente');
-    qry.SQL.Add('where id_cliente = :id_cliente');
+    qry.SQL.Add('UPDATE clientes SET nome = :nome, endereco = :endereco,');
+    qry.SQL.Add('complemento = :complemento, bairro = :bairro, cidade = :cidade, uf = :uf');
+    qry.SQL.Add('WHERE id_cliente = :id_cliente');
 
-    qry.ParamByName('id_cliente').Value:= id_cliente;
-    qry.ParamByName('nome').Value:= nome;
-    qry.ParamByName('endereco').Value:= endereco;
-    qry.ParamByName('complemento').Value:= complemento;
-    qry.ParamByName('bairro').Value:= bairro;
-    qry.ParamByName('cidade').Value:= cidade;
-    qry.ParamByName('uf').Value:= uf;
+    qry.ParamByName('id_cliente').Value := id_cliente;
+    qry.ParamByName('nome').Value := nome;
+    qry.ParamByName('endereco').Value := endereco;
+    qry.ParamByName('complemento').Value := complemento;
+    qry.ParamByName('bairro').Value := bairro;
+    qry.ParamByName('cidade').Value := cidade;
+    qry.ParamByName('uf').Value := uf;
     qry.ExecSQL;
 
-    Result:= TJSONOBJECT.Create(tjSONPair.Create('id_cliente',id_cliente));
+    Result := TJSONObject.Create(TJSONPair.Create('id_cliente', id_cliente));
 
   finally
-    freeandnil(qry);
+    FreeAndNil(qry);
   end;
 end;
+
 
 
 function TDm.ClienteExcluir(id_cliente: integer): TJsonObject;

@@ -53,9 +53,11 @@ type
     procedure btnCancelarClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormShow(Sender: TObject);
+    procedure btnSalvarClick(Sender: TObject);
   private
     { Private declarations }
   procedure terminateLoad(Sender:Tobject);
+    procedure terminateSalvar(Sender: Tobject);
   public
     { Public declarations }
   end;
@@ -70,6 +72,19 @@ implementation
 procedure TFrmClienteCad.btnCancelarClick(Sender: TObject);
 begin
   TNavigation.close(self);
+end;
+
+procedure TFrmClienteCad.btnSalvarClick(Sender: TObject);
+begin
+
+  TLoading.ExecuteThread(procedure
+  begin
+      if TNavigation.ParamInt = 0 then
+        DmCliente.inserir(edtNome.Text, edtEndereco.Text, edtComplemento.Text,edtBairro.Text, edtCidade.Text,edtUf.Text)
+      else
+        DmCliente.editar(TNavigation.ParamInt,edtNome.Text, edtEndereco.Text, edtComplemento.Text,edtBairro.Text, edtCidade.Text,edtUf.Text);
+  end, TerminateSalvar);
+
 end;
 
 procedure TFrmClienteCad.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -87,11 +102,27 @@ begin
     TLoading.Show;
     TLoading.ExecuteThread(procedure
     begin
-      sleep(2000);
+      //sleep(2000);
       dmcliente.ListarClienteID(tabClienteCad,TNavigation.ParamInt);
 
     end, Terminateload);
   end;
+end;
+
+procedure TFrmClienteCad.terminateSalvar(Sender: Tobject);
+begin
+
+  Tloading.Hide;
+
+
+  if sender is TThread then
+    if assigned(TThread(sender).FatalException) then
+    begin
+      showmessage(exception(TThread(sender).FatalException).Message);
+      exit;
+    end;
+
+   Tnavigation.Close(self);
 end;
 
 procedure TFrmClienteCad.terminateLoad(Sender: Tobject);

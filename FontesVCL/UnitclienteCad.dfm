@@ -22,7 +22,6 @@ object FrmClienteCad: TFrmClienteCad
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 0
-    ExplicitLeft = -8
     object Label1: TLabel
       Left = 8
       Top = 107
@@ -48,8 +47,6 @@ object FrmClienteCad: TFrmClienteCad
       Font.Name = 'Segoe UI'
       Font.Style = []
       ParentFont = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
       ExplicitWidth = 140
     end
     object Label2: TLabel
@@ -125,6 +122,7 @@ object FrmClienteCad: TFrmClienteCad
         Font.Name = 'Segoe UI Black'
         Font.Style = [fsBold]
         ParentFont = False
+        OnClick = btnSalvarClick
         ExplicitLeft = -8
       end
     end
