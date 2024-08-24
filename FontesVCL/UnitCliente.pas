@@ -53,12 +53,17 @@ type
     procedure btnNovoClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure sbEditarClick(Sender: TObject);
+    procedure SBExcluirClick(Sender: TObject);
   private
+  { Private declarations }
+    bookMark: TBookMark;
+
+  {Private Procedures}
     procedure OpenCadCliente(Id_cliente: integer);
     procedure RefreshClientes;
     procedure TerminateBusca(Sender: TObject);
     procedure editar;
-    { Private declarations }
+    procedure TerminateDelete(Sender: TObject);
 
   public
     { Public declarations }
@@ -73,6 +78,8 @@ implementation
 
 procedure TFrmCliente.OpenCadCliente(Id_cliente: integer);
 begin
+  Tnavigation.ExecuteOnClose:= RefreshClientes;
+
   Tnavigation.ParamInt:= Id_cliente;
   Tnavigation.openModal(TFrmClienteCad, FrmClienteCad);
 end;
@@ -89,8 +96,8 @@ begin
   if tabCliente.RecordCount = 0 then
     exit;
 
+  bookMark:= DBCliente.DataSource.DataSet.GetBookmark;
   OpenCadCliente(TabCliente.FieldByName('id_cliente').AsInteger);
-
 end;
 
 procedure TFrmCliente.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -116,6 +123,12 @@ begin
       showmessage(exception(TThread(sender).FatalException).Message);
       exit;
     end;
+
+  if bookMark <> nil then
+  begin
+   DBCliente.DataSource.DataSet.GotoBookmark(bookMark);
+   BookMark:= nil;
+   end;
 end;
 
 
@@ -142,6 +155,34 @@ procedure TFrmCliente.sbEditarClick(Sender: TObject);
 begin
   editar;
   RefreshClientes;
+end;
+
+procedure TFrmCliente.SBExcluirClick(Sender: TObject);
+begin
+  if messageDlg('Deseja excluir o cliente selecionado ? ', TMsgdlgtype.mtconfirmation, [tmsgdlgbtn.mbYes,tmsgdlgbtn.mbno],0 ) = mrYes then
+  begin
+    tloading.ExecuteThread(procedure
+    begin
+      DmCliente.excluir(TabCliente.FieldByName('id_cliente').AsInteger);
+
+    end, terminateDelete)
+
+  end;
+
+end;
+
+procedure TFrmCliente.TerminateDelete(Sender: TObject);
+begin
+   //Tloading.Hide;
+
+   if sender is TThread then
+    if assigned(TThread(sender).FatalException) then
+    begin
+      showmessage(exception(TThread(sender).FatalException).Message);
+      exit;
+    end;
+
+   RefreshClientes;
 end;
 
 end.

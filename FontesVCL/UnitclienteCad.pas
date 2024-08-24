@@ -71,7 +71,7 @@ implementation
 
 procedure TFrmClienteCad.btnCancelarClick(Sender: TObject);
 begin
-  TNavigation.close(self);
+  TNavigation.closeandcancel(self);
 end;
 
 procedure TFrmClienteCad.btnSalvarClick(Sender: TObject);

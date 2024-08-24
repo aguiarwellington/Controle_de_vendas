@@ -116,6 +116,7 @@ object FrmCliente: TFrmCliente
         Font.Name = 'Segoe UI Black'
         Font.Style = [fsBold]
         ParentFont = False
+        OnClick = SBExcluirClick
         ExplicitTop = -30
         ExplicitWidth = 194
         ExplicitHeight = 50
@@ -241,7 +242,7 @@ object FrmCliente: TFrmCliente
     Margins.Bottom = 0
     Align = alClient
     BorderStyle = bsNone
-    Color = clBtnText
+    Color = clWhite
     DataSource = dsCliente
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText

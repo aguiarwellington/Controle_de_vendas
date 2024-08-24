@@ -16,7 +16,9 @@ uses
   horse,
   Horse.Jhonson,
   Horse.CORS,
-  Controllers.cliente;
+  Controllers.cliente,
+  Controllers.produto,
+  Controllers.usuario;
 
 type
   TFrmMainServidor = class(TForm)
@@ -44,6 +46,8 @@ begin
   Thorse.Use(Cors);
 
   Controllers.cliente.RegistrarRotas;
+  Controllers.produto.RegistrarRotas;
+  Controllers.usuario.RegistrarRotas;
 
   THorse.Listen(3000);
 

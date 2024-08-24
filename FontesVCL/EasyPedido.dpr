@@ -11,7 +11,8 @@ uses
   UnitCliente in 'UnitCliente.pas' {FrmCliente},
   UnitclienteCad in 'UnitclienteCad.pas' {FrmClienteCad},
   DataModules.Cliente in 'DataModules\DataModules.Cliente.pas' {DMCliente: TDataModule},
-  Vcl.Loading in 'utils\Vcl.Loading.pas';
+  Vcl.Loading in 'utils\Vcl.Loading.pas',
+  DataModules.Usuario in 'DataModules\DataModules.Usuario.pas' {DmUsuario: TDataModule};
 
 {$R *.res}
 
@@ -20,6 +21,5 @@ begin
   Application.Initialize;
   Application.MainFormOnTaskbar := True;
   Application.CreateForm(TFrmLogin, FrmLogin);
-  Application.CreateForm(TDMCliente, DMCliente);
   Application.Run;
 end.

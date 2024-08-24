@@ -110,6 +110,9 @@
             <FormType>dfm</FormType>
             <DesignClass>TDataModule</DesignClass>
         </DCCReference>
+        <DCCReference Include="Controle\Controllers.produto.pas"/>
+        <DCCReference Include="Controle\Controllers.usuario.pas"/>
+        <DCCReference Include="..\Utils\uMD5.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

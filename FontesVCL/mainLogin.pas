@@ -17,8 +17,12 @@ uses
   Vcl.StdCtrls,
   Vcl.Buttons,
   untLoad,
+  vcl.Loading,
   main,
-  VCL.Session;
+  VCL.Session,
+  DataModules.Usuario, FireDAC.Stan.Intf, FireDAC.Stan.Option,
+  FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf,
+  FireDAC.DApt.Intf, Data.DB, FireDAC.Comp.DataSet, FireDAC.Comp.Client;
 
 type
   TFrmLogin = class(TForm)
@@ -34,6 +38,7 @@ type
     EdtSenha: TEdit;
     Panel3: TPanel;
     spButton: TSpeedButton;
+    tabUsuario: TFDMemTable;
     procedure spButtonClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -62,9 +67,9 @@ begin
         exit;
       end;
 
-    TSession.ID_USUARIO := 1;
-    TSession.EMAIL := 'Wellingtoncarvalho@gmail.com';
-    TSession.NOME := 'Wellington Carvalho';
+    TSession.ID_USUARIO := tabUsuario.FieldByName('id_usuario').AsInteger;
+    TSession.EMAIL := tabUsuario.FieldByName('email').asstring;
+    TSession.NOME := tabUsuario.FieldByName('nome').asString;
 
     //Tloading.HideLoading;
     if not assigned(frmPrincipal) then
@@ -89,19 +94,18 @@ procedure TFrmLogin.spButtonClick(Sender: TObject);
 begin
   //criar uma tela de loding
 
-  TLoadingForm.ShowLoading;
+  //Tloading.show(self);
 
-  TLoadingForm.ExecuteThread(
+  Tloading.ExecuteThread(
     procedure
     begin
       // Simula uma operação de longa duração
-      Sleep(1000);
-    end,
-    procedure
-    begin
-      TerminateLogin(Sender);
-    end
-  );
+     // Sleep(800);
+
+      DmUsuario.Login(tabUsuario, edtEmail.Text, edtSenha.Text);
+
+
+    end,TerminateLogin);
 
 
 end;

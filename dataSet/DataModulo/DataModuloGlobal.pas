@@ -21,6 +21,7 @@ uses
   FireDAC.Phys.SQLiteWrapper.Stat,
   Data.DB,
   FireDAC.Comp.Client,
+  uMd5,
 
 
   DataSet.Serialize.Config,
@@ -40,10 +41,12 @@ type
   public
     { Public declarations }
     function ClienteListar(filtro:string): TJsonArray;
+    function ProdutoListar(filtro: string): TJsonArray;
     function ClienteListarId(id_cliente: integer): TJsonObject;
     function ClienteInserir( nome,endereco,complemento,bairro,cidade,uf: string): TJsonObject;
     function ClienteEditar(id_cliente: integer; nome, endereco, complemento, bairro, cidade, uf: string): TJsonObject;
     function ClienteExcluir(id_cliente: integer): TJsonObject;
+    function usuarioLogin(email, senha: string): TJsonObject;
   end;
 
 var
@@ -205,6 +208,37 @@ begin
 
 end;
 
+function TDm.ProdutoListar(filtro:string): TJsonArray;
+var
+  qry: TFDQuery;
+begin
+  try
+    qry := TFDQuery.Create(nil);
+    qry.Connection:= Conn;
+
+    qry.SQL.Add('select *');
+    qry.SQL.Add('from produto');
+
+    if filtro <> '' then
+    begin
+      qry.SQL.add('where descricao like :filtro');
+      qry.ParamByName('filtro').Value := '%' + filtro + '%';
+    end;
+
+    qry.SQL.add('order by descricao');
+    qry.Active := true;
+
+    result := qry.ToJSONArray;
+
+  finally
+    freeAndNil(qry);
+  end;
+
+end;
+
+
+
+
 function TDm.ClienteListarId(id_cliente: integer): TJsonObject;
 var
   qry: TFDQuery;
@@ -217,6 +251,32 @@ begin
     qry.SQL.Add('from clientes');
     qry.SQL.add('where id_cliente = :id_cliente');
     qry.ParamByName('id_cliente').Value :=  id_cliente;
+    qry.Active := true;
+
+    result := qry.ToJSonObject;
+
+  finally
+    freeAndNil(qry);
+  end;
+
+
+
+end;
+
+
+function TDm.usuarioLogin(email,senha: string): TJsonObject;
+var
+  qry: TFDQuery;
+begin
+  try
+    qry := TFDQuery.Create(nil);
+    qry.Connection:= Conn;
+
+    qry.SQL.Add('select id_usuario, nome, email,senha');
+    qry.SQL.Add('from usuario');
+    qry.SQL.add('where email = :email and senha = :senha');
+    qry.ParamByName('email').Value :=  email;
+    qry.ParamByName('senha').Value :=  SaltPassWord(senha);
     qry.Active := true;
 
     result := qry.ToJSonObject;
