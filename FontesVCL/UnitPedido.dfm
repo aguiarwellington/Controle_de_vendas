@@ -32,12 +32,11 @@ object frmPedido: TfrmPedido
     Color = 16051947
     ParentBackground = False
     TabOrder = 0
-    ExplicitWidth = 640
     object Label1: TLabel
       AlignWithMargins = True
       Left = 3
       Top = 20
-      Width = 118
+      Width = 103
       Height = 60
       Margins.Top = 20
       Margins.Bottom = 0
@@ -51,6 +50,7 @@ object frmPedido: TfrmPedido
       Font.Style = []
       ParentColor = False
       ParentFont = False
+      ExplicitHeight = 40
     end
     object Panel3: TPanel
       AlignWithMargins = True
@@ -67,7 +67,6 @@ object frmPedido: TfrmPedido
       Color = 16475988
       ParentBackground = False
       TabOrder = 0
-      ExplicitLeft = 334
       object spButton: TSpeedButton
         Left = 0
         Top = 0
@@ -103,7 +102,6 @@ object frmPedido: TfrmPedido
       Color = 6906591
       ParentBackground = False
       TabOrder = 1
-      ExplicitLeft = 487
       object SBExcluir: TSpeedButton
         Left = 0
         Top = 0
@@ -141,7 +139,6 @@ object frmPedido: TfrmPedido
       Color = 16475988
       ParentBackground = False
       TabOrder = 2
-      ExplicitLeft = 181
       object sbEditar: TSpeedButton
         Left = 0
         Top = 0
@@ -166,9 +163,9 @@ object frmPedido: TfrmPedido
     end
     object pnlBuscar: TPanel
       AlignWithMargins = True
-      Left = 124
+      Left = 109
       Top = 0
-      Width = 395
+      Width = 410
       Height = 80
       Margins.Left = 0
       Margins.Top = 0
@@ -179,10 +176,9 @@ object frmPedido: TfrmPedido
       Color = 16051947
       ParentBackground = False
       TabOrder = 3
-      ExplicitWidth = 7
       object pnlButtonBuscar: TPanel
         AlignWithMargins = True
-        Left = 242
+        Left = 257
         Top = 20
         Width = 138
         Height = 40
@@ -195,7 +191,6 @@ object frmPedido: TfrmPedido
         Color = 16475988
         ParentBackground = False
         TabOrder = 0
-        ExplicitLeft = -146
         object sbBuscar: TSpeedButton
           Left = 0
           Top = 0
@@ -220,7 +215,7 @@ object frmPedido: TfrmPedido
         AlignWithMargins = True
         Left = 0
         Top = 20
-        Width = 242
+        Width = 257
         Height = 40
         Margins.Left = 0
         Margins.Top = 20
@@ -334,7 +329,7 @@ object frmPedido: TfrmPedido
     Left = 576
     Top = 152
   end
-  object FDMemTable1: TFDMemTable
+  object tabPedido: TFDMemTable
     FetchOptions.AssignedValues = [evMode]
     FetchOptions.Mode = fmAll
     ResourceOptions.AssignedValues = [rvSilentMode]
@@ -342,7 +337,7 @@ object frmPedido: TfrmPedido
     UpdateOptions.AssignedValues = [uvCheckRequired, uvAutoCommitUpdates]
     UpdateOptions.CheckRequired = False
     UpdateOptions.AutoCommitUpdates = True
-    Left = 560
-    Top = 264
+    Left = 712
+    Top = 200
   end
 end

@@ -18,7 +18,8 @@ uses
   Horse.CORS,
   Controllers.cliente,
   Controllers.produto,
-  Controllers.usuario;
+  Controllers.usuario,
+  Controllers.Pedidos;
 
 type
   TFrmMainServidor = class(TForm)
@@ -48,6 +49,7 @@ begin
   Controllers.cliente.RegistrarRotas;
   Controllers.produto.RegistrarRotas;
   Controllers.usuario.RegistrarRotas;
+  Controllers.Pedidos.RegistrarRotas;
 
   THorse.Listen(3000);
 

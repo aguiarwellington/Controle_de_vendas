@@ -60,22 +60,22 @@ procedure  TFrmLogin.TerminateLogin(Sender: TObject);
 begin
 
   //saber se houve algum erro na execucao da tthread
-    if sender is TThread then
-      if assigned(TThread(sender).FatalException) then
-      begin
-        showmessage(exception(TThread(sender).FatalException).Message);
-        exit;
-      end;
+  if sender is TThread then
+    if assigned(TThread(sender).FatalException) then
+    begin
+      showmessage(exception(TThread(sender).FatalException).Message);
+      exit;
+    end;
 
-    TSession.ID_USUARIO := tabUsuario.FieldByName('id_usuario').AsInteger;
-    TSession.EMAIL := tabUsuario.FieldByName('email').asstring;
-    TSession.NOME := tabUsuario.FieldByName('nome').asString;
+  TSession.ID_USUARIO := tabUsuario.FieldByName('id_usuario').AsInteger;
+  TSession.EMAIL := tabUsuario.FieldByName('email').asstring;
+  TSession.NOME := tabUsuario.FieldByName('nome').asString;
 
-    //Tloading.HideLoading;
-    if not assigned(frmPrincipal) then
-      application.CreateForm(TfrmPrincipal,frmPrincipal);
+  //Tloading.HideLoading;
+  if not assigned(frmPrincipal) then
+    application.CreateForm(TfrmPrincipal,frmPrincipal);
 
-    frmPrincipal.show;
+  frmPrincipal.show;
 end;
 
 procedure TFrmLogin.FormCreate(Sender: TObject);
@@ -106,7 +106,6 @@ begin
 
 
     end,TerminateLogin);
-
 
 end;
 
