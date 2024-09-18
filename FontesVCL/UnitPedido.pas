@@ -27,7 +27,8 @@ uses
   FireDAC.DApt.Intf,
   FireDAC.Comp.DataSet,
   FireDAC.Comp.Client,
-  Vcl.Loading;;
+  Vcl.Loading,
+  DataModules.Pedido;
 
 type
   TfrmPedido = class(TForm)
@@ -39,17 +40,27 @@ type
     SBExcluir: TSpeedButton;
     Panel2: TPanel;
     sbEditar: TSpeedButton;
-    DBGrid1: TDBGrid;
-    DataSource1: TDataSource;
+    DBPedido: TDBGrid;
+    DsPedido: TDataSource;
     pnlBuscar: TPanel;
     pnlButtonBuscar: TPanel;
     sbBuscar: TSpeedButton;
     edtPesquisar: TEdit;
     tabPedido: TFDMemTable;
+    tabPedidoid_pedido: TIntegerField;
+    tabPedidoid_usuario: TIntegerField;
+    tabPedidodt_pedido: TDateField;
+    tabPedidovl_total: TFloatField;
+    tabPedidonome: TStringField;
+    tabPedidocidade: TStringField;
+    tabPedidousuario: TStringField;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure FormShow(Sender: TObject);
   private
+    bookMark: TBookMark;
     { Private declarations }
     procedure RefreshPedido;
+    procedure TerminateBusca(Sender: TObject);
   public
     { Public declarations }
   end;
@@ -67,21 +78,46 @@ begin
     FrmPedido := nil;
 end;
 
+procedure TfrmPedido.FormShow(Sender: TObject);
+begin
+  RefreshPedido;
+end;
+
 procedure TfrmPedido.RefreshPedido;
 begin
-  Tloading.show;
+  //Tloading.show;
 
   Tloading.ExecuteThread(procedure
   begin
     sleep(1000);
 
     //acessando o servidor
-    //DBCliente.DataSource:= nil;
-    //DMCliente.ListarCliente(tabPedido, edtPesquisar.text);
+    DBPedido.DataSource:= nil;
+    DMPedido.ListarPedido(tabPedido, edtPesquisar.text);
 
   end, TerminateBusca);
 
-
 end;
+
+procedure TfrmPedido.TerminateBusca(Sender: TObject);
+begin
+   Tloading.Hide;
+
+   DBPedido.DataSource:= dspedido;
+
+   if sender is TThread then
+    if assigned(TThread(sender).FatalException) then
+    begin
+      showmessage(exception(TThread(sender).FatalException).Message);
+      exit;
+    end;
+
+  if bookMark <> nil then
+  begin
+   DBPedido.DataSource.DataSet.GotoBookmark(bookMark);
+   BookMark:= nil;
+   end;
+end;
+
 
 end.

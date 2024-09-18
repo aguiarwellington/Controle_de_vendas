@@ -16,6 +16,7 @@ object frmPedido: TfrmPedido
   Position = poDefault
   WindowState = wsMaximized
   OnClose = FormClose
+  OnShow = FormShow
   TextHeight = 15
   object pHeader: TPanel
     AlignWithMargins = True
@@ -233,7 +234,7 @@ object frmPedido: TfrmPedido
       end
     end
   end
-  object DBGrid1: TDBGrid
+  object DBPedido: TDBGrid
     AlignWithMargins = True
     Left = 0
     Top = 80
@@ -246,13 +247,15 @@ object frmPedido: TfrmPedido
     Align = alClient
     BorderStyle = bsNone
     Color = clWhite
-    DataSource = DataSource1
+    DataSource = DsPedido
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -15
     Font.Name = 'Segoe UI'
     Font.Style = []
+    Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgRowSelect, dgConfirmDelete, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
     ParentFont = False
+    ReadOnly = True
     TabOrder = 1
     TitleFont.Charset = DEFAULT_CHARSET
     TitleFont.Color = clWindowText
@@ -262,74 +265,116 @@ object frmPedido: TfrmPedido
     Columns = <
       item
         Expanded = False
-        FieldName = 'Pedidos'
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -16
-        Font.Name = 'Segoe UI Semibold'
-        Font.Style = [fsBold]
+        FieldName = 'id_pedido'
+        Title.Caption = 'Id. Pedido'
         Title.Font.Charset = ANSI_CHARSET
         Title.Font.Color = clWindowText
-        Title.Font.Height = -15
+        Title.Font.Height = -19
         Title.Font.Name = 'Segoe UI Semibold'
         Title.Font.Style = [fsBold]
-        Width = 150
         Visible = True
       end
       item
         Expanded = False
-        FieldName = 'Clientes'
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -16
-        Font.Name = 'Segoe UI Semibold'
-        Font.Style = [fsBold]
+        FieldName = 'nome'
+        Title.Caption = 'Cliente'
         Title.Font.Charset = ANSI_CHARSET
         Title.Font.Color = clWindowText
-        Title.Font.Height = -15
+        Title.Font.Height = -19
         Title.Font.Name = 'Segoe UI Semibold'
         Title.Font.Style = [fsBold]
-        Width = 150
         Visible = True
       end
       item
         Expanded = False
-        FieldName = 'Endereco'
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -16
-        Font.Name = 'Segoe UI Semibold'
-        Font.Style = [fsBold]
+        FieldName = 'cidade'
+        Title.Caption = 'Cidade'
         Title.Font.Charset = ANSI_CHARSET
         Title.Font.Color = clWindowText
-        Title.Font.Height = -15
+        Title.Font.Height = -19
         Title.Font.Name = 'Segoe UI Semibold'
         Title.Font.Style = [fsBold]
-        Width = 155
         Visible = True
       end
       item
         Expanded = False
-        FieldName = 'Total'
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -16
-        Font.Name = 'Segoe UI Semibold'
-        Font.Style = [fsBold]
+        FieldName = 'usuario'
+        Title.Caption = 'Usuario Cad.'
         Title.Font.Charset = ANSI_CHARSET
         Title.Font.Color = clWindowText
-        Title.Font.Height = -15
+        Title.Font.Height = -19
         Title.Font.Name = 'Segoe UI Semibold'
         Title.Font.Style = [fsBold]
-        Width = 150
+        Width = 146
+        Visible = True
+      end
+      item
+        Alignment = taCenter
+        Expanded = False
+        FieldName = 'dt_pedido'
+        Title.Alignment = taCenter
+        Title.Caption = 'Data do Pedido'
+        Title.Font.Charset = ANSI_CHARSET
+        Title.Font.Color = clWindowText
+        Title.Font.Height = -19
+        Title.Font.Name = 'Segoe UI Semibold'
+        Title.Font.Style = [fsBold]
+        Width = 183
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'vl_total'
+        Title.Alignment = taRightJustify
+        Title.Caption = 'Valor total'
+        Title.Font.Charset = ANSI_CHARSET
+        Title.Font.Color = clWindowText
+        Title.Font.Height = -19
+        Title.Font.Name = 'Segoe UI Semibold'
+        Title.Font.Style = [fsBold]
+        Width = 153
         Visible = True
       end>
   end
-  object DataSource1: TDataSource
-    Left = 576
-    Top = 152
+  object DsPedido: TDataSource
+    DataSet = tabPedido
+    Left = 944
+    Top = 208
   end
   object tabPedido: TFDMemTable
+    FieldDefs = <
+      item
+        Name = 'id_pedido'
+        DataType = ftInteger
+      end
+      item
+        Name = 'id_usuario'
+        DataType = ftInteger
+      end
+      item
+        Name = 'dt_pedido'
+        DataType = ftDate
+      end
+      item
+        Name = 'vl_total'
+        DataType = ftFloat
+      end
+      item
+        Name = 'nome'
+        DataType = ftString
+        Size = 20
+      end
+      item
+        Name = 'cidade'
+        DataType = ftString
+        Size = 20
+      end
+      item
+        Name = 'usuario'
+        DataType = ftString
+        Size = 20
+      end>
+    IndexDefs = <>
     FetchOptions.AssignedValues = [evMode]
     FetchOptions.Mode = fmAll
     ResourceOptions.AssignedValues = [rvSilentMode]
@@ -337,7 +382,29 @@ object frmPedido: TfrmPedido
     UpdateOptions.AssignedValues = [uvCheckRequired, uvAutoCommitUpdates]
     UpdateOptions.CheckRequired = False
     UpdateOptions.AutoCommitUpdates = True
-    Left = 712
-    Top = 200
+    StoreDefs = True
+    Left = 856
+    Top = 208
+    object tabPedidoid_pedido: TIntegerField
+      FieldName = 'id_pedido'
+    end
+    object tabPedidoid_usuario: TIntegerField
+      FieldName = 'id_usuario'
+    end
+    object tabPedidodt_pedido: TDateField
+      FieldName = 'dt_pedido'
+    end
+    object tabPedidovl_total: TFloatField
+      FieldName = 'vl_total'
+    end
+    object tabPedidonome: TStringField
+      FieldName = 'nome'
+    end
+    object tabPedidocidade: TStringField
+      FieldName = 'cidade'
+    end
+    object tabPedidousuario: TStringField
+      FieldName = 'usuario'
+    end
   end
 end
