@@ -13,7 +13,8 @@ uses
   DataModules.Cliente in 'DataModules\DataModules.Cliente.pas' {DMCliente: TDataModule},
   Vcl.Loading in 'utils\Vcl.Loading.pas',
   DataModules.Usuario in 'DataModules\DataModules.Usuario.pas' {DmUsuario: TDataModule},
-  DataModules.Pedido in 'DataModules\DataModules.Pedido.pas' {DmPedido: TDataModule};
+  DataModules.Pedido in 'DataModules\DataModules.Pedido.pas' {DmPedido: TDataModule},
+  UnitPedidoCad in 'UnitPedidoCad.pas' {PedidoCad};
 
 {$R *.res}
 
@@ -23,5 +24,6 @@ begin
   Application.MainFormOnTaskbar := True;
   Application.CreateForm(TFrmLogin, FrmLogin);
   Application.CreateForm(TDmPedido, DmPedido);
+  Application.CreateForm(TPedidoCad, PedidoCad);
   Application.Run;
 end.

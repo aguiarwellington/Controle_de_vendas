@@ -83,6 +83,7 @@ object frmPedido: TfrmPedido
         Font.Name = 'Segoe UI Black'
         Font.Style = [fsBold]
         ParentFont = False
+        OnClick = spButtonClick
         ExplicitTop = -30
         ExplicitWidth = 194
         ExplicitHeight = 50
@@ -120,6 +121,7 @@ object frmPedido: TfrmPedido
         Font.Name = 'Segoe UI Black'
         Font.Style = [fsBold]
         ParentFont = False
+        OnClick = SBExcluirClick
         ExplicitTop = -30
         ExplicitWidth = 194
         ExplicitHeight = 50
@@ -157,6 +159,7 @@ object frmPedido: TfrmPedido
         Font.Name = 'Segoe UI Black'
         Font.Style = [fsBold]
         ParentFont = False
+        OnClick = sbEditarClick
         ExplicitTop = -30
         ExplicitWidth = 194
         ExplicitHeight = 50

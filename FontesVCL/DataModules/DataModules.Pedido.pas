@@ -29,6 +29,7 @@ type
     { Public declarations }
      procedure ListarPedido(memtable: TFDMemTable; filtro:string);
      procedure ListarPedidoId(memtable: TFDMemTable; id_pedido: integer);
+     procedure excluir(id_pedido:integer);
   end;
 
 var
@@ -41,6 +42,21 @@ implementation
 {$R *.dfm}
 
 { TDmPedido }
+
+procedure TDmPedido.excluir(id_pedido: integer);
+var
+  resp: IResponse;
+begin
+
+    resp:= TRequest.new.baseURL('http://localhost:3000')
+                        .Resource('/Pedidos')
+                        .ResourceSuffix(id_pedido.ToString)
+                        .Accept('application/json')
+                        .Delete;
+
+    if resp.StatusCode <> 200 then
+      raise exception.Create(resp.Content);
+end;
 
 procedure TDmPedido.ListarPedido(memtable: TFDMemTable; filtro: string);
 var
