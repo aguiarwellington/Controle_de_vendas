@@ -1,4 +1,3 @@
-
 unit Vcl.Loading;
 
 interface

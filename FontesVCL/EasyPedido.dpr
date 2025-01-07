@@ -2,27 +2,28 @@ program EasyPedido;
 
 uses
   Vcl.Forms,
-  mainLogin in 'mainLogin.pas' {FrmLogin},
-  main in 'main.pas' {frmPrincipal},
-  VCL.Session in 'utils\VCL.Session.pas',
-  VclNavigation in 'utils\VclNavigation.pas',
-  untLoad in 'utils\untLoad.pas',
-  UnitPedido in 'UnitPedido.pas' {frmPedido},
+  UnitLogin in 'UnitLogin.pas' {FrmLogin},
+  UnitPrincipal in 'UnitPrincipal.pas' {FrmPrincipal},
+  Vcl.Loading in 'Utils\Vcl.Loading.pas',
+  Vcl.Session in 'Utils\Vcl.Session.pas',
+  Vcl.Navigation in 'Utils\Vcl.Navigation.pas',
+  UnitPedido in 'UnitPedido.pas' {FrmPedido},
   UnitCliente in 'UnitCliente.pas' {FrmCliente},
-  UnitclienteCad in 'UnitclienteCad.pas' {FrmClienteCad},
-  DataModules.Cliente in 'DataModules\DataModules.Cliente.pas' {DMCliente: TDataModule},
-  Vcl.Loading in 'utils\Vcl.Loading.pas',
-  DataModules.Usuario in 'DataModules\DataModules.Usuario.pas' {DmUsuario: TDataModule},
-  DataModules.Pedido in 'DataModules\DataModules.Pedido.pas' {DmPedido: TDataModule},
+  UnitClienteCad in 'UnitClienteCad.pas' {FrmClienteCad},
+  DataModule.Cliente in 'DataModules\DataModule.Cliente.pas' {DmCliente: TDataModule},
+  DataModule.Usuario in 'DataModules\DataModule.Usuario.pas' {DmUsuario: TDataModule},
+  DataModule.Pedido in 'DataModules\DataModule.Pedido.pas' {DmPedido: TDataModule},
   UnitPedidoCad in 'UnitPedidoCad.pas' {PedidoCad};
 
 {$R *.res}
 
 begin
-  reportMemoryLeaksOnShutdown := true;
+  ReportMemoryLeaksOnShutdown := true;
   Application.Initialize;
   Application.MainFormOnTaskbar := True;
   Application.CreateForm(TFrmLogin, FrmLogin);
+  Application.CreateForm(TDmCliente, DmCliente);
+  Application.CreateForm(TDmUsuario, DmUsuario);
   Application.CreateForm(TDmPedido, DmPedido);
   Application.CreateForm(TPedidoCad, PedidoCad);
   Application.Run;

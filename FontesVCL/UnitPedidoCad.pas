@@ -4,28 +4,42 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, FireDAC.Stan.Intf, FireDAC.Stan.Option,
-  FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf,
-  FireDAC.DApt.Intf, Data.DB, FireDAC.Comp.DataSet, FireDAC.Comp.Client,
-  Vcl.Buttons, Vcl.StdCtrls, Vcl.ExtCtrls,VclNavigation,Vcl.Loading;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.Buttons,Vcl.Navigation,Vcl.Loading,
+  FireDAC.Stan.Intf, FireDAC.Stan.Option, FireDAC.Stan.Param,
+  FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf, FireDAC.DApt.Intf,
+  FireDAC.Stan.StorageBin, Data.DB, FireDAC.Comp.DataSet, FireDAC.Comp.Client,DataModule.Pedido,
+  Vcl.ComCtrls, Vcl.Grids, Vcl.DBGrids;
 
 type
   TPedidoCad = class(TForm)
-    pnl_main: TPanel;
-    Label1: TLabel;
-    lblTitle: TLabel;
-    EdtNome: TEdit;
+    pnlMain: TPanel;
+    lblTitulo: TLabel;
+    pnlTitle: TPanel;
+    edtidCliente: TEdit;
+    Label2: TLabel;
     Panel1: TPanel;
     btnSalvar: TSpeedButton;
     Panel2: TPanel;
     btnCancelar: TSpeedButton;
-    tabPedidoCad: TFDMemTable;
+    edtNome: TEdit;
+    DTdata: TDateTimePicker;
+    tabPedido: TFDMemTable;
+    id_pedido: TIntegerField;
+    id_usuario: TIntegerField;
+    id_cliente: TIntegerField;
+    dt_pedido: TDateField;
+    vl_total: TFloatField;
+    nome: TStringField;
+    tabPedidocidade: TStringField;
+    usuario: TStringField;
+    dbItens: TDBGrid;
+    tabItens: TFDMemTable;
+    DsItens: TDataSource;
     procedure btnCancelarClick(Sender: TObject);
-    procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormShow(Sender: TObject);
   private
-    procedure terminateLoad(Sender: Tobject);
     { Private declarations }
+     procedure TerminateLoad(Sender: TObject);
   public
     { Public declarations }
   end;
@@ -37,55 +51,41 @@ implementation
 
 {$R *.dfm}
 
-uses DataModules.Pedido;
-
 procedure TPedidoCad.btnCancelarClick(Sender: TObject);
 begin
-   TNavigation.closeandcancel(self);
-end;
-
-procedure TPedidoCad.FormClose(Sender: TObject; var Action: TCloseAction);
-begin
-  action:= TCloseAction.caFree;
-  PedidoCad := nil;
+  TNavigation.CloseAndCancel(Self);
 end;
 
 procedure TPedidoCad.FormShow(Sender: TObject);
 begin
-  if TNavigation.ParamInt > 0 then
-  begin
-    lblTitle.Caption := 'Editar pedido';
-
-    TLoading.Show;
-    TLoading.ExecuteThread(procedure
+   if TNavigation.ParamInt > 0 then
     begin
-      //sleep(2000);
-      DmPedido.ListarpedidoID(tabPedidoCad,TNavigation.ParamInt);
+        lblTitulo.Caption := 'Editar pedido';
+        dbItens.DataSource:= nil;
 
-    end, Terminateload);
-  end;
+       // TLoading.Show;
+        TLoading.ExecuteThread(procedure
+        begin
+            sleep(2000);
+            Dmpedido.ListarId(tabPedido,TabItens, TNavigation.ParamInt);
+        end, TerminateLoad);
+    end;
 end;
 
-
-procedure TPedidoCad.terminateLoad(Sender: Tobject);
+procedure TPedidoCad.TerminateLoad(Sender: TObject);
 begin
+       //TLoading.Hide;
+        dbItens.DataSource:= dsItens;
+    if Sender is TThread then
+        if Assigned(TThread(Sender).FatalException) then
+        begin
+            showmessage(Exception(TThread(sender).FatalException).Message);
+            exit;
+        end;
 
-  {Tloading.Hide;
-
-
-  if sender is TThread then
-    if assigned(TThread(sender).FatalException) then
-    begin
-      showmessage(exception(TThread(sender).FatalException).Message);
-      exit;
-    end;
-
-  edtNome.Text:= tabclienteCad.FieldByName('nome').AsString;
-  EdtEndereco.Text:= tabclienteCad.FieldByName('endereco').AsString;
-  EdtComplemento.Text:= tabclienteCad.FieldByName('complemento').AsString;
-  EdtBairro.Text:= tabclienteCad.FieldByName('bairro').AsString;
-  EdtCidade.Text:= tabclienteCad.FieldByName('cidade').AsString;
-  EdtUf.Text:= tabclienteCad.FieldByName('uf').AsString;  }
+    edtidCliente.Text := tabPedido.FieldByName('id_cliente').AsString;
+    edtNome.Text := tabPedido.FieldByName('nome').AsString;
+    dtData.date := tabPedido.FieldByName('dt_pedido').AsDateTime;
 
 end;
 

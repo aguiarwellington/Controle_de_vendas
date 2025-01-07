@@ -3,186 +3,163 @@ unit UnitPedido;
 interface
 
 uses
-  Winapi.Windows,
-  Winapi.Messages,
-  System.SysUtils,
-  System.Variants,
-  System.Classes,
-  Vcl.Graphics,
-  Vcl.Controls,
-  Vcl.Forms,
-  Vcl.Dialogs,
-  Vcl.StdCtrls,
-  Vcl.ExtCtrls,
-  Data.DB,
-  Vcl.Grids,
-  Vcl.DBGrids,
-  Vcl.Buttons,
-  FireDAC.Stan.Intf,
-  FireDAC.Stan.Option,
-  FireDAC.Stan.Param,
-  FireDAC.Stan.Error,
-  FireDAC.DatS,
-   FireDAC.Phys.Intf,
-  FireDAC.DApt.Intf,
-  FireDAC.Comp.DataSet,
-  FireDAC.Comp.Client,
-  Vcl.Loading,
-  DataModules.Pedido,
-  UnitPedidoCad,
-  VclNavigation;
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.Buttons,
+  Data.DB, Vcl.Grids, Vcl.DBGrids, FireDAC.Stan.Intf, FireDAC.Stan.Option,
+  FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf,
+  FireDAC.DApt.Intf, FireDAC.Stan.StorageBin, FireDAC.Comp.DataSet,
+  FireDAC.Comp.Client, DataModule.Pedido,Vcl.Loading,UnitPedidoCad,Vcl.Navigation;
 
 type
-  TfrmPedido = class(TForm)
+  TFrmPedido = class(TForm)
     pHeader: TPanel;
-    Label1: TLabel;
-    Panel3: TPanel;
-    spButton: TSpeedButton;
+    Label4: TLabel;
     Panel1: TPanel;
-    SBExcluir: TSpeedButton;
+    btnExcluir: TSpeedButton;
     Panel2: TPanel;
-    sbEditar: TSpeedButton;
-    DBPedido: TDBGrid;
-    DsPedido: TDataSource;
-    pnlBuscar: TPanel;
-    pnlButtonBuscar: TPanel;
-    sbBuscar: TSpeedButton;
-    edtPesquisar: TEdit;
+    btnAdd: TSpeedButton;
+    Panel3: TPanel;
+    SpeedButton2: TSpeedButton;
+    dbPedido: TDBGrid;
     tabPedido: TFDMemTable;
-    tabPedidoid_pedido: TIntegerField;
-    tabPedidoid_usuario: TIntegerField;
-    tabPedidodt_pedido: TDateField;
-    tabPedidovl_total: TFloatField;
-    tabPedidonome: TStringField;
+    dsPedido: TDataSource;
+    pBusca: TPanel;
+    Panel7: TPanel;
+    btnBusca: TSpeedButton;
+    edtBusca: TEdit;
+    id_pedido: TIntegerField;
+    id_usuario: TIntegerField;
+    id_cliente: TIntegerField;
+    dt_pedido: TDateField;
+    vl_total: TFloatField;
+    nome: TStringField;
     tabPedidocidade: TStringField;
-    tabPedidousuario: TStringField;
+    usuario: TStringField;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormShow(Sender: TObject);
-    procedure SBExcluirClick(Sender: TObject);
-    procedure spButtonClick(Sender: TObject);
-    procedure sbEditarClick(Sender: TObject);
+    procedure btnExcluirClick(Sender: TObject);
+    procedure btnAddClick(Sender: TObject);
+    procedure dbPedidoDblClick(Sender: TObject);
   private
-    bookMark: TBookMark;
+     bookmark: TBookmark;
     { Private declarations }
-    procedure RefreshPedido;
+    procedure refreshPedidos;
     procedure TerminateBusca(Sender: TObject);
     procedure TerminateDelete(Sender: TObject);
-    procedure OpenCadPedido(Id_pedido: integer);
-    procedure editar;
+    procedure OpenCadPedido(id_pedido: integer);
+    procedure Editar;
   public
     { Public declarations }
   end;
 
 var
-  frmPedido: TfrmPedido;
+  FrmPedido: TFrmPedido;
 
 implementation
 
 {$R *.dfm}
 
-procedure TfrmPedido.FormClose(Sender: TObject; var Action: TCloseAction);
+procedure TFrmPedido.btnAddClick(Sender: TObject);
 begin
-    Action := TcloseAction.caFree;
+   OpenCadPedido(0);
+end;
+
+procedure TFrmPedido.btnExcluirClick(Sender: TObject);
+begin
+    if Tabpedido.RecordCount = 0 then
+        exit;
+
+    if MessageDlg('Deseja excluir o pedido selecionado?', TMsgDlgType.mtConfirmation,
+                [TMsgDlgBtn.mbYes, TMsgDlgBtn.mbNo], 0) = mrYes then
+    begin
+       // TLoading.Show;
+        TLoading.ExecuteThread(procedure
+        begin
+            Dmpedido.Excluir(Tabpedido.FieldByName('id_pedido').AsInteger);
+        end, TerminateDelete);
+    end;
+end;
+
+procedure TFrmPedido.dbPedidoDblClick(Sender: TObject);
+begin
+   Editar;
+end;
+
+procedure TFrmPedido.Editar;
+begin
+     if Tabpedido.RecordCount = 0 then
+        exit;
+
+    bookmark := dbPedido.DataSource.DataSet.GetBookmark;
+    OpenCadpedido(Tabpedido.FieldByName('id_pedido').AsInteger);
+end;
+
+procedure TFrmPedido.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+    Action := TCloseAction.caFree;
     FrmPedido := nil;
 end;
 
-procedure TfrmPedido.FormShow(Sender: TObject);
+procedure TFrmPedido.FormShow(Sender: TObject);
 begin
-  RefreshPedido;
+    refreshPedidos;
 end;
 
-procedure TfrmPedido.OpenCadPedido(Id_pedido: integer);
+procedure TFrmPedido.OpenCadPedido(id_pedido: integer);
 begin
-  Tnavigation.ExecuteOnClose:= RefreshPedido;
-
-  Tnavigation.ParamInt:= Id_pedido;
-  Tnavigation.openModal(TPedidoCad, PedidoCad);
+   TNavigation.ExecuteOnClose := refreshPedidos;
+   TNavigation.ParamInt := id_pedido;
+   TNavigation.OpenModal(TPedidoCad, PedidoCad);
 end;
 
-procedure TfrmPedido.RefreshPedido;
+procedure TFrmPedido.refreshPedidos;
 begin
-  //Tloading.show;
+        //TLoading.Show;
 
-  Tloading.ExecuteThread(procedure
-  begin
-    sleep(1000);
-
-    //acessando o servidor
-    DBPedido.DataSource:= nil;
-    DMPedido.ListarPedido(tabPedido, edtPesquisar.text);
-
-  end, TerminateBusca);
-
-end;
-
-procedure TfrmPedido.sbEditarClick(Sender: TObject);
-begin
-  editar;
-  RefreshPedido;
-end;
-
-procedure TfrmPedido.editar;
-begin
-  if tabPedido.RecordCount = 0 then
-    exit;
-
-  bookMark:= DBpedido.DataSource.DataSet.GetBookmark;
-  OpenCadpedido(Tabpedido.FieldByName('id_pedido').AsInteger);
-end;
-
-procedure TfrmPedido.SBExcluirClick(Sender: TObject);
-begin
-  if messageDlg('Deseja excluir o pedido selecionado ? ', TMsgdlgtype.mtconfirmation, [tmsgdlgbtn.mbYes,tmsgdlgbtn.mbno],0 ) = mrYes then
-  begin
-    tloading.ExecuteThread(procedure
+    TLoading.ExecuteThread(procedure
     begin
-      Dmpedido.excluir(Tabpedido.FieldByName('id_pedido').AsInteger);
+        sleep(800);
 
-    end, terminateDelete)
-
-  end;
+        // Acessar o servidor...
+        //TabCliente.DisableControls;
+        dbPedido.DataSource := nil;
+        DmPedido.Listar(tabPedido, edtBusca.Text);
+    end,
+    TerminateBusca);
 end;
 
-procedure TfrmPedido.spButtonClick(Sender: TObject);
+procedure TFrmPedido.TerminateBusca(Sender: TObject);
 begin
-  OpenCadPedido(0);
-  RefreshPedido;
+    TLoading.Hide;
+    dbPedido.DataSource := dsPedido;
+    //TabCliente.EnableControls;
+
+
+    if Sender is TThread then
+        if Assigned(TThread(Sender).FatalException) then
+        begin
+            showmessage(Exception(TThread(sender).FatalException).Message);
+            exit;
+        end;
+
+    if bookmark <> nil then
+        try
+            dbPedido.DataSource.DataSet.GotoBookmark(bookmark);
+            bookmark := nil;
+        except
+        end;
 end;
 
-procedure TfrmPedido.TerminateDelete(Sender: TObject);
+procedure TFrmPedido.TerminateDelete(Sender: TObject);
 begin
-   //Tloading.Hide;
+    if Sender is TThread then
+        if Assigned(TThread(Sender).FatalException) then
+        begin
+            showmessage(Exception(TThread(sender).FatalException).Message);
+            exit;
+        end;
 
-   if sender is TThread then
-    if assigned(TThread(sender).FatalException) then
-    begin
-      showmessage(exception(TThread(sender).FatalException).Message);
-      exit;
-    end;
-
-   RefreshPedido;
+    refreshPedidos;
 end;
-
-
-procedure TfrmPedido.TerminateBusca(Sender: TObject);
-begin
-   Tloading.Hide;
-
-   DBPedido.DataSource:= dspedido;
-
-   if sender is TThread then
-    if assigned(TThread(sender).FatalException) then
-    begin
-      showmessage(exception(TThread(sender).FatalException).Message);
-      exit;
-    end;
-
-  if bookMark <> nil then
-  begin
-   DBPedido.DataSource.DataSet.GotoBookmark(bookMark);
-   BookMark:= nil;
-   end;
-end;
-
 
 end.

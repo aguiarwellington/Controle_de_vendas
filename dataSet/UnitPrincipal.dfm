@@ -2,8 +2,8 @@ object FrmMainServidor: TFrmMainServidor
   Left = 0
   Top = 0
   Caption = 'ServidorPedidos'
-  ClientHeight = 636
-  ClientWidth = 812
+  ClientHeight = 673
+  ClientWidth = 894
   Color = clWhite
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -15,7 +15,7 @@ object FrmMainServidor: TFrmMainServidor
   object lblServer: TLabel
     Left = 0
     Top = 0
-    Width = 812
+    Width = 894
     Height = 30
     Align = alTop
     Caption = 'Porta: 0'

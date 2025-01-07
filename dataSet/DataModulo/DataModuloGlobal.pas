@@ -50,12 +50,9 @@ type
     function ClienteExcluir(id_cliente: integer): TJsonObject;
     function usuarioLogin(email, senha: string): TJsonObject;
 
-    function pedidoEditar(id_pedido, id_cliente: integer; dt_pedido: string;
-      vl_total: double;itens:tjsonArray): TJsonObject;
+    function pedidoEditar(id_pedido, id_cliente: integer; dt_pedido: string;vl_total: double;itens:tjsonArray): TJsonObject;
     function PedidoExcluir(id_pedido: integer): TJsonObject;
-    function PedidoInserir(id_cliente,id_usuario: integer; dt_pedido: string;
-      vl_total: double;  itens: TJSONArray): TJsonObject;
-
+    function PedidoInserir(id_cliente,id_usuario: integer; dt_pedido: string;vl_total: double;  itens: TJSONArray): TJsonObject;
     function pedidoListar(filtro: string): TJsonArray;
     function PedidoListarId(id_pedido: integer): TJsonObject;
   end;
@@ -252,24 +249,28 @@ function TDm.ClienteListarId(id_cliente: integer): TJsonObject;
 var
   qry: TFDQuery;
 begin
+  qry := TFDQuery.Create(nil);
   try
-    qry := TFDQuery.Create(nil);
-    qry.Connection:= Conn;
+    qry.Connection := Conn;
 
-    qry.SQL.Add('select *');
-    qry.SQL.Add('from cliente');
-    qry.SQL.add('where id_cliente = :id_cliente');
-    qry.ParamByName('id_cliente').Value :=  id_cliente;
-    qry.Active := true;
+    // Verifique a validade do ID
+    if id_cliente <= 0 then
+      raise Exception.Create('ID do cliente inválido!');
 
-    result := qry.ToJSonObject;
+    qry.SQL.Text := 'SELECT * FROM cliente WHERE id_cliente = :id_cliente';
+    qry.ParamByName('id_cliente').AsInteger := id_cliente;
 
+    qry.Open;
+
+    // Verifique se o registro foi encontrado
+    if qry.IsEmpty then
+      raise Exception.Create('Nenhum cliente encontrado com o ID: ' + id_cliente.ToString);
+
+    // Retorna os dados como JSON
+    Result := qry.ToJsonObject;
   finally
-    freeAndNil(qry);
+    qry.Free;
   end;
-
-
-
 end;
 
 

@@ -49,6 +49,7 @@ procedure TDMCliente.DataModuleCreate(Sender: TObject);
 begin
   TDataSetSerializeConfig.GetInstance.CaseNameDefinition := cndLower;
   TDataSetSerializeConfig.GetInstance.Import.DecimalSeparator:= '.';
+
 end;
 
 

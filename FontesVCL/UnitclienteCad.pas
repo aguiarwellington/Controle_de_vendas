@@ -1,63 +1,43 @@
-unit UnitclienteCad;
+unit UnitClienteCad;
 
 interface
 
 uses
-  Winapi.Windows,
-  Winapi.Messages,
-  System.SysUtils,
-  System.Variants,
-  System.Classes,
-  Vcl.Graphics,
-  Vcl.Controls,
-  Vcl.Forms,
-  Vcl.Dialogs,
-  Vcl.StdCtrls,
-  Vcl.Buttons,
-  Vcl.ExtCtrls,
-  VclNavigation,
-  Vcl.Loading,
-  DataModules.Cliente,
-  FireDAC.Stan.Intf,
-  FireDAC.Stan.Option,
-  FireDAC.Stan.Param,
-  FireDAC.Stan.Error,
-  FireDAC.DatS,
-  FireDAC.Phys.Intf,
-  FireDAC.DApt.Intf,
-  Data.DB,
-  FireDAC.Comp.DataSet,
-  FireDAC.Comp.Client;
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.Buttons,
+  Vcl.ExtCtrls, Vcl.Navigation, Vcl.Loading, FireDAC.Stan.Intf,
+  FireDAC.Stan.Option, FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS,
+  FireDAC.Phys.Intf, FireDAC.DApt.Intf, FireDAC.Stan.StorageBin, Data.DB,
+  FireDAC.Comp.DataSet, FireDAC.Comp.Client;
 
 type
   TFrmClienteCad = class(TForm)
-    lblTitle: TLabel;
+    lblTitulo: TLabel;
     Panel2: TPanel;
     btnCancelar: TSpeedButton;
     Panel1: TPanel;
     btnSalvar: TSpeedButton;
-    EdtNome: TEdit;
-    Label1: TLabel;
-    pnl_main: TPanel;
     Label2: TLabel;
-    EdtEndereco: TEdit;
-    EdtComplemento: TEdit;
+    edtNome: TEdit;
+    Label1: TLabel;
+    edtEndereco: TEdit;
+    edtComplemento: TEdit;
     Label3: TLabel;
     Label4: TLabel;
-    EdtBairro: TEdit;
+    edtBairro: TEdit;
+    edtUF: TEdit;
     Label5: TLabel;
-    EdtCidade: TEdit;
+    edtCidade: TEdit;
     Label6: TLabel;
-    EdtUf: TEdit;
-    tabClienteCad: TFDMemTable;
+    TabClienteCad: TFDMemTable;
     procedure btnCancelarClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormShow(Sender: TObject);
     procedure btnSalvarClick(Sender: TObject);
   private
+    procedure TerminateLoad(Sender: TObject);
+    procedure TerminateSalvar(Sender: TObject);
     { Private declarations }
-  procedure terminateLoad(Sender:Tobject);
-    procedure terminateSalvar(Sender: Tobject);
   public
     { Public declarations }
   end;
@@ -69,82 +49,83 @@ implementation
 
 {$R *.dfm}
 
+uses DataModule.Cliente;
+
 procedure TFrmClienteCad.btnCancelarClick(Sender: TObject);
 begin
-  TNavigation.closeandcancel(self);
+    TNavigation.CloseAndCancel(Self);
 end;
+
+procedure TFrmClienteCad.TerminateSalvar(Sender: TObject);
+begin
+    TLoading.Hide;
+
+    if Sender is TThread then
+        if Assigned(TThread(Sender).FatalException) then
+        begin
+            showmessage(Exception(TThread(sender).FatalException).Message);
+            exit;
+        end;
+
+    TNavigation.Close(Self);
+end;
+
 
 procedure TFrmClienteCad.btnSalvarClick(Sender: TObject);
 begin
+    TLoading.Show;
 
-  TLoading.ExecuteThread(procedure
-  begin
-      if TNavigation.ParamInt = 0 then
-        DmCliente.inserir(edtNome.Text, edtEndereco.Text, edtComplemento.Text,edtBairro.Text, edtCidade.Text,edtUf.Text)
-      else
-        DmCliente.editar(TNavigation.ParamInt,edtNome.Text, edtEndereco.Text, edtComplemento.Text,edtBairro.Text, edtCidade.Text,edtUf.Text);
-  end, TerminateSalvar);
+    TLoading.ExecuteThread(procedure
+    begin
+        sleep(800);
 
+        if TNavigation.ParamInt = 0 then
+            DmCliente.Inserir(edtNome.Text, edtEndereco.Text, edtComplemento.Text,
+                              edtBairro.Text, edtCidade.Text, edtUF.Text)
+        else
+            DmCliente.Editar(TNavigation.ParamInt, edtNome.Text, edtEndereco.Text,
+                              edtComplemento.Text, edtBairro.Text, edtCidade.Text, edtUF.Text);
+    end, TerminateSalvar);
 end;
 
 procedure TFrmClienteCad.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
-  action:= TCloseAction.caFree;
-  FrmClienteCad := nil;
+    Action := TCloseAction.caFree;
+    FrmClienteCad := nil;
+end;
+
+procedure TFrmClienteCad.TerminateLoad(Sender: TObject);
+begin
+    TLoading.Hide;
+
+    if Sender is TThread then
+        if Assigned(TThread(Sender).FatalException) then
+        begin
+            showmessage(Exception(TThread(sender).FatalException).Message);
+            exit;
+        end;
+
+    edtNome.Text := TabClienteCad.FieldByName('nome').AsString;
+    edtEndereco.Text := TabClienteCad.FieldByName('endereco').AsString;
+    edtComplemento.Text := TabClienteCad.FieldByName('complemento').AsString;
+    edtBairro.Text := TabClienteCad.FieldByName('bairro').AsString;
+    edtCidade.Text := TabClienteCad.FieldByName('cidade').AsString;
+    edtUF.Text := TabClienteCad.FieldByName('uf').AsString;
 end;
 
 procedure TFrmClienteCad.FormShow(Sender: TObject);
 begin
-  if TNavigation.ParamInt > 0 then
-  begin
-    lblTitle.Caption := 'Editar Cliente';
-
-    TLoading.Show;
-    TLoading.ExecuteThread(procedure
+    if TNavigation.ParamInt > 0 then
     begin
-      //sleep(2000);
-      dmcliente.ListarClienteID(tabClienteCad,TNavigation.ParamInt);
+        lblTitulo.Caption := 'Editar Cliente';
 
-    end, Terminateload);
-  end;
-end;
-
-procedure TFrmClienteCad.terminateSalvar(Sender: Tobject);
-begin
-
-  Tloading.Hide;
-
-
-  if sender is TThread then
-    if assigned(TThread(sender).FatalException) then
-    begin
-      showmessage(exception(TThread(sender).FatalException).Message);
-      exit;
+        TLoading.Show;
+        TLoading.ExecuteThread(procedure
+        begin
+            sleep(2000);
+            DmCliente.ListarClienteId(TabClienteCad, TNavigation.ParamInt);
+        end, TerminateLoad);
     end;
-
-   Tnavigation.Close(self);
-end;
-
-procedure TFrmClienteCad.terminateLoad(Sender: Tobject);
-begin
-
-  Tloading.Hide;
-
-
-  if sender is TThread then
-    if assigned(TThread(sender).FatalException) then
-    begin
-      showmessage(exception(TThread(sender).FatalException).Message);
-      exit;
-    end;
-
-  edtNome.Text:= tabclienteCad.FieldByName('nome').AsString;
-  EdtEndereco.Text:= tabclienteCad.FieldByName('endereco').AsString;
-  EdtComplemento.Text:= tabclienteCad.FieldByName('complemento').AsString;
-  EdtBairro.Text:= tabclienteCad.FieldByName('bairro').AsString;
-  EdtCidade.Text:= tabclienteCad.FieldByName('cidade').AsString;
-  EdtUf.Text:= tabclienteCad.FieldByName('uf').AsString;
-
 end;
 
 end.
