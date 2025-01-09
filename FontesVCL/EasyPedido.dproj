@@ -120,7 +120,7 @@
             <Form>FrmCliente</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="UnitclienteCad.pas">
+        <DCCReference Include="UnitClienteCad.pas">
             <Form>FrmClienteCad</Form>
             <FormType>dfm</FormType>
         </DCCReference>

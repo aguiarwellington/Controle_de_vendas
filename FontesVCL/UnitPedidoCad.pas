@@ -4,78 +4,117 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.Buttons,Vcl.Navigation,Vcl.Loading,
-  FireDAC.Stan.Intf, FireDAC.Stan.Option, FireDAC.Stan.Param,
-  FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf, FireDAC.DApt.Intf,
-  FireDAC.Stan.StorageBin, Data.DB, FireDAC.Comp.DataSet, FireDAC.Comp.Client,DataModule.Pedido,
-  Vcl.ComCtrls, Vcl.Grids, Vcl.DBGrids;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, FireDAC.Stan.Intf, FireDAC.Stan.Option,
+  FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf,
+  FireDAC.DApt.Intf, FireDAC.Stan.StorageBin, Data.DB, FireDAC.Comp.DataSet,
+  FireDAC.Comp.Client, Vcl.StdCtrls, Vcl.Buttons, Vcl.ExtCtrls,
+  Vcl.Navigation, Vcl.Loading, Vcl.ComCtrls, Vcl.Grids, Vcl.DBGrids, Vcl.Mask,
+  Vcl.DBCtrls, Vcl.Session, DataSet.Serialize;
 
 type
-  TPedidoCad = class(TForm)
-    pnlMain: TPanel;
+  TFrmPedidoCad = class(TForm)
     lblTitulo: TLabel;
-    pnlTitle: TPanel;
-    edtidCliente: TEdit;
     Label2: TLabel;
-    Panel1: TPanel;
-    btnSalvar: TSpeedButton;
     Panel2: TPanel;
     btnCancelar: TSpeedButton;
-    edtNome: TEdit;
-    DTdata: TDateTimePicker;
-    tabPedido: TFDMemTable;
-    id_pedido: TIntegerField;
-    id_usuario: TIntegerField;
-    id_cliente: TIntegerField;
-    dt_pedido: TDateField;
-    vl_total: TFloatField;
-    nome: TStringField;
-    tabPedidocidade: TStringField;
-    usuario: TStringField;
-    dbItens: TDBGrid;
-    tabItens: TFDMemTable;
-    DsItens: TDataSource;
+    Panel1: TPanel;
+    btnSalvar: TSpeedButton;
+    edtIdCliente: TEdit;
+    edtCliente: TEdit;
+    dtPedido: TDateTimePicker;
+    Label1: TLabel;
+    TabPedido: TFDMemTable;
+    TabPedidoid_pedido: TFDAutoIncField;
+    TabPedidonome: TStringField;
+    TabPedidocidade: TStringField;
+    TabPedidodt_pedido: TDateField;
+    TabPedidovl_total: TCurrencyField;
+    TabPedidousuario: TStringField;
+    TabPedidoid_cliente: TIntegerField;
+    gridItens: TDBGrid;
+    TabItens: TFDMemTable;
+    dsItens: TDataSource;
+    TabItensid_item: TIntegerField;
+    TabItensid_produto: TIntegerField;
+    TabItensdescricao: TStringField;
+    TabItensqtd: TIntegerField;
+    TabItensvl_unitario: TFloatField;
+    TabItensvl_total: TFloatField;
+    lblTotal: TLabel;
+    Label3: TLabel;
+    pItem: TPanel;
+    Panel4: TPanel;
+    btnCancelarItem: TSpeedButton;
+    Panel5: TPanel;
+    bnSalvarItem: TSpeedButton;
+    DBEdit1: TDBEdit;
+    DBEdit2: TDBEdit;
+    DBEdit3: TDBEdit;
+    DBEdit4: TDBEdit;
+    DBEdit5: TDBEdit;
+    Panel6: TPanel;
+    btnNovo: TSpeedButton;
+    Panel3: TPanel;
+    btnEditar: TSpeedButton;
+    Panel7: TPanel;
+    btnExcluir: TSpeedButton;
+    Label4: TLabel;
+    Label5: TLabel;
+    Label6: TLabel;
+    Label7: TLabel;
+    Label8: TLabel;
+    Label9: TLabel;
     procedure btnCancelarClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure btnNovoClick(Sender: TObject);
+    procedure btnEditarClick(Sender: TObject);
+    procedure btnCancelarItemClick(Sender: TObject);
+    procedure btnExcluirClick(Sender: TObject);
+    procedure bnSalvarItemClick(Sender: TObject);
+    procedure btnSalvarClick(Sender: TObject);
   private
+    total: double;
+    procedure TerminateLoad(Sender: TObject);
+    procedure CalcularTotal;
+    procedure TerminateSalvar(Sender: TObject);
     { Private declarations }
-     procedure TerminateLoad(Sender: TObject);
   public
     { Public declarations }
   end;
 
 var
-  PedidoCad: TPedidoCad;
+  FrmPedidoCad: TFrmPedidoCad;
 
 implementation
 
 {$R *.dfm}
 
-procedure TPedidoCad.btnCancelarClick(Sender: TObject);
-begin
-  TNavigation.CloseAndCancel(Self);
-end;
+uses DataModule.Pedido;
 
-procedure TPedidoCad.FormShow(Sender: TObject);
+procedure TFrmPedidoCad.bnSalvarItemClick(Sender: TObject);
 begin
-   if TNavigation.ParamInt > 0 then
+    if TabItens.State in [dsEdit, dsInsert] then
     begin
-        lblTitulo.Caption := 'Editar pedido';
-        dbItens.DataSource:= nil;
-
-       // TLoading.Show;
-        TLoading.ExecuteThread(procedure
-        begin
-            sleep(2000);
-            Dmpedido.ListarId(tabPedido,TabItens, TNavigation.ParamInt);
-        end, TerminateLoad);
+        TabItens.Post;
+        CalcularTotal;
     end;
+
+    pItem.Visible := false;
 end;
 
-procedure TPedidoCad.TerminateLoad(Sender: TObject);
+procedure TFrmPedidoCad.btnCancelarClick(Sender: TObject);
 begin
-       //TLoading.Hide;
-        dbItens.DataSource:= dsItens;
+    TNavigation.CloseAndCancel(Self);
+end;
+
+procedure TFrmPedidoCad.TerminateLoad(Sender: TObject);
+begin
+    TLoading.Hide;
+    CalcularTotal;
+    gridItens.DataSource := dsItens;
+    TabItens.Active := true;
+
     if Sender is TThread then
         if Assigned(TThread(Sender).FatalException) then
         begin
@@ -83,10 +122,115 @@ begin
             exit;
         end;
 
-    edtidCliente.Text := tabPedido.FieldByName('id_cliente').AsString;
-    edtNome.Text := tabPedido.FieldByName('nome').AsString;
-    dtData.date := tabPedido.FieldByName('dt_pedido').AsDateTime;
+    edtIdCliente.Text := TabPedido.FieldByName('id_cliente').AsString;
+    edtCliente.Text := TabPedido.FieldByName('nome').AsString;
+    dtPedido.Date := TabPedido.FieldByName('dt_pedido').AsDateTime;
+end;
 
+procedure TFrmPedidoCad.btnCancelarItemClick(Sender: TObject);
+begin
+    TabItens.Cancel;
+    pItem.Visible := false;
+end;
+
+procedure TFrmPedidoCad.btnEditarClick(Sender: TObject);
+begin
+    if TabItens.RecordCount = 0 then
+        exit;
+
+    TabItens.Edit;
+    pItem.Visible := true;
+end;
+
+procedure TFrmPedidoCad.btnExcluirClick(Sender: TObject);
+begin
+     if TabItens.RecordCount = 0 then
+        exit;
+
+    TabItens.Delete;
+    CalcularTotal;
+end;
+
+procedure TFrmPedidoCad.btnNovoClick(Sender: TObject);
+begin
+   //Vai inserir um registro em branco no dataset
+    TabItens.Append;
+    pItem.Visible := true;
+end;
+
+procedure TFrmPedidoCad.TerminateSalvar(Sender: TObject);
+begin
+    TLoading.Hide;
+
+    if Sender is TThread then
+        if Assigned(TThread(Sender).FatalException) then
+        begin
+            showmessage(Exception(TThread(sender).FatalException).Message);
+            exit;
+        end;
+
+    TNavigation.Close(Self);
+end;
+
+procedure TFrmPedidoCad.btnSalvarClick(Sender: TObject);
+begin
+   // TLoading.Show;
+
+    TLoading.ExecuteThread(procedure
+    begin
+        //sleep(800);
+
+        if TNavigation.ParamInt = 0 then
+            DmPedido.Inserir(TSession.ID_USUARIO, strtoint(edtIdCliente.Text),
+                            dtPedido.Date, total,
+                            TabItens.ToJSONArray)
+        else
+            DmPedido.Editar(TNavigation.ParamInt, strtoint(edtIdCliente.Text),
+                            dtPedido.Date, total,
+                            TabItens.ToJSONArray);
+
+    end, TerminateSalvar);
+end;
+
+procedure TFrmPedidoCad.CalcularTotal;
+begin
+    total := 0;
+
+    if TabItens.RecordCount = 0 then
+        exit;
+
+    TabItens.First;
+    while NOT TabItens.eof do
+    begin
+        total := total + TabItens.FieldByName('vl_total').AsFloat;
+        TabItens.Next;
+    end;
+
+    lblTotal.Caption := 'Total: ' + FormatFloat('R$ #,##0.00', total);
+end;
+
+procedure TFrmPedidoCad.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+    Action := TCloseAction.caFree;
+    FrmPedidoCad := nil;
+end;
+
+procedure TFrmPedidoCad.FormShow(Sender: TObject);
+begin
+    if TNavigation.ParamInt > 0 then
+    begin
+        lblTitulo.Caption := 'Editar Pedido';
+        gridItens.DataSource := nil;
+
+        //TLoading.Show;
+        TLoading.ExecuteThread(procedure
+        begin
+            //sleep(2000);
+            DmPedido.ListarId(TabPedido, TabItens, TNavigation.ParamInt);
+        end, TerminateLoad);
+    end
+    else
+        TabItens.Active := true;
 end;
 
 end.

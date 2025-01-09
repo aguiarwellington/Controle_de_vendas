@@ -109,7 +109,7 @@ procedure TFrmPedido.OpenCadPedido(id_pedido: integer);
 begin
    TNavigation.ExecuteOnClose := refreshPedidos;
    TNavigation.ParamInt := id_pedido;
-   TNavigation.OpenModal(TPedidoCad, PedidoCad);
+   TNavigation.OpenModal(TFrmPedidoCad, FrmPedidoCad);
 end;
 
 procedure TFrmPedido.refreshPedidos;

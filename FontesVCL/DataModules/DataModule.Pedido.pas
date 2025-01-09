@@ -128,7 +128,7 @@ begin
         json.AddPair('itens', itens);
 
         resp := TRequest.New.BaseURL('http://localhost:3000')
-                        .Resource('/pedidos')
+                        .Resource('/Pedidos')
                         .ResourceSuffix(id_pedido.ToString)
                         .AddBody(json.ToJSON)
                         .Accept('application/json')

@@ -25,6 +25,6 @@ begin
   Application.CreateForm(TDmCliente, DmCliente);
   Application.CreateForm(TDmUsuario, DmUsuario);
   Application.CreateForm(TDmPedido, DmPedido);
-  Application.CreateForm(TPedidoCad, PedidoCad);
+  Application.CreateForm(TFrmPedidoCad, FrmPedidoCad);
   Application.Run;
 end.
